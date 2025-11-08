@@ -10,6 +10,8 @@ export default function Board() {
   const [newTask, setNewTask] = useState("");
   const [deadline, setDeadline] = useState("");
 
+  const [touchTask, setTouchTask] = useState(null); // for mobile touch drag
+
   const handleAddTask = () => {
     if (newTask.trim() === "") return;
 
@@ -49,6 +51,28 @@ export default function Board() {
   };
 
   const handleDragOver = (e) => e.preventDefault();
+
+  // 🔹 Mobile touch drag handlers
+  const handleTouchStart = (task, source) => {
+    setTouchTask({ task, source });
+  };
+
+  const handleTouchEnd = (destination) => {
+    if (!touchTask || touchTask.source === destination) return;
+
+    setTasks((prev) => {
+      const newSource = prev[touchTask.source].filter(
+        (t) => t.text !== touchTask.task.text
+      );
+      const newDestination = [...prev[destination], touchTask.task];
+      return {
+        ...prev,
+        [touchTask.source]: newSource,
+        [destination]: newDestination,
+      };
+    });
+    setTouchTask(null);
+  };
 
   // Delete single task
   const handleDeleteTask = (section, index) => {
@@ -137,6 +161,7 @@ export default function Board() {
               className="bg-black/80 rounded-2xl p-6 shadow-lg transition-transform hover:scale-[1.02]"
               onDrop={(e) => handleDrop(e, status)}
               onDragOver={handleDragOver}
+              onTouchEnd={() => handleTouchEnd(status)}
             >
               <h2 className="text-2xl font-semibold mb-4 capitalize text-center border-b border-gray-600 pb-2">
                 {status.replace(/([A-Z])/g, " $1")}
@@ -153,6 +178,7 @@ export default function Board() {
                       key={index}
                       draggable
                       onDragStart={(e) => handleDragStart(e, task, status)}
+                      onTouchStart={() => handleTouchStart(task, status)}
                       className="p-3 bg-gray-700/90 rounded-lg shadow-md cursor-grab hover:bg-gray-600 transition-all"
                     >
                       <div className="flex justify-between items-start">
