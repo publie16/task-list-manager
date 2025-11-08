@@ -36,3 +36,22 @@
     transform: rotate(360deg);
   }
 }
+
+.animated-bg {
+  background: linear-gradient(-45deg, #667eea, #764ba2, #6b73ff, #000dff);
+  background-size: 400% 400%;
+  animation: gradientMove 15s ease infinite;
+}
+
+@keyframes gradientMove {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.App {
+  background-image: url("../sunflower-dark-floral-ohrknmbvtjx0enuh.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
